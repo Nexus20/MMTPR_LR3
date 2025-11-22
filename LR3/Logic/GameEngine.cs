@@ -170,37 +170,45 @@ public class GameEngine
         var (optimalIndex, guaranteedPayoff, minPayoffs) = CalculateMaximin();
         var optimalStrategy = Attacker.Strategies[optimalIndex];
 
-        var analysis = "Аналіз стратегій (Принцип максиміну):\n";
-        analysis += "─────────────────────────────────────\n\n";
+        var sb = new System.Text.StringBuilder();
+        
+        sb.AppendLine("АНАЛІЗ СТРАТЕГІЙ ЗА ПРИНЦИПОМ МАКСИМІНУ");
+        sb.AppendLine();
 
         // Аналіз кожної стратегії
-        foreach (var kvp in minPayoffs)
+        foreach (var kvp in minPayoffs.OrderBy(x => x.Key))
         {
             var strategy = Attacker.Strategies[kvp.Key];
             var minPayoff = kvp.Value;
             var isOptimal = kvp.Key == optimalIndex;
 
-            analysis += $"{strategy.Name} ({strategy.Description}):\n";
-            analysis += $"  Мінімальний гарантований виграш: {minPayoff} балів";
+            sb.Append($"{strategy.Name} ({strategy.Description}) - можливі виграші: ");
+            
+            var payoffs = new List<string>();
+            for (var j = 0; j < Matrix.ColumnCount; j++)
+            {
+                var payoff = Matrix[kvp.Key, j];
+                var marker = payoff == minPayoff ? $"{payoff}*" : $"{payoff}";
+                payoffs.Add(marker);
+            }
+            sb.Append(string.Join(", ", payoffs));
+            sb.Append($" балів. Мінімум: {minPayoff} балів.");
             
             if (isOptimal)
             {
-                analysis += " ★ ОПТИМАЛЬНА";
+                sb.Append(" [ОПТИМАЛЬНА]");
             }
-            
-            analysis += "\n\n";
+            sb.AppendLine();
         }
 
-        analysis += "─────────────────────────────────────\n";
-        analysis += $"Рекомендація: {optimalStrategy.Name}\n";
-        analysis += $"Гарантований виграш: {guaranteedPayoff} балів\n";
-        analysis += "─────────────────────────────────────\n\n";
-        analysis += "Пояснення: Принцип максиміну гарантує, що навіть\n";
-        analysis += "в найгіршому випадку (коли захисник обере найкращу\n";
-        analysis += "для себе стратегію), атакуючий отримає мінімум\n";
-        analysis += $"{guaranteedPayoff} балів успіху атаки.";
+        sb.AppendLine();
+        sb.AppendLine($"РЕКОМЕНДАЦІЯ: Обрати стратегію {optimalStrategy.Name} ({optimalStrategy.Description}), яка гарантує мінімум {guaranteedPayoff} балів навіть у найгіршому випадку.");
+        sb.AppendLine();
+        sb.AppendLine("ПОЯСНЕННЯ: Принцип максиміну полягає в тому, щоб для кожної стратегії знайти найгірший можливий результат (мінімальний виграш), а потім обрати ту стратегію, у якої цей \"найгірший результат\" є найкращим (максимум з мінімумів). Це забезпечує гарантований мінімальний виграш незалежно від дій противника.");
+        sb.AppendLine();
+        sb.AppendLine("Примітка: зірочкою (*) позначено мінімальний виграш для кожної стратегії.");
 
-        return analysis;
+        return sb.ToString();
     }
 
     /// <summary>
