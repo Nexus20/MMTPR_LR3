@@ -34,14 +34,13 @@ public class GameMatrix
     /// </summary>
     public void SetValue(int row, int column, int value)
     {
-        if (row >= 0 && row < RowCount && column >= 0 && column < ColumnCount)
-        {
-            PayoffMatrix[row, column] = value;
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException("Індекси виходять за межі матриці");
-        }
+        if (row < 0 || row >= RowCount)
+            throw new ArgumentOutOfRangeException(nameof(row), $"Індекс рядка {row} виходить за межі матриці (0-{RowCount - 1}).");
+        
+        if (column < 0 || column >= ColumnCount)
+            throw new ArgumentOutOfRangeException(nameof(column), $"Індекс стовпця {column} виходить за межі матриці (0-{ColumnCount - 1}).");
+        
+        PayoffMatrix[row, column] = value;
     }
 
     /// <summary>
@@ -49,11 +48,13 @@ public class GameMatrix
     /// </summary>
     public int GetValue(int row, int column)
     {
-        if (row >= 0 && row < RowCount && column >= 0 && column < ColumnCount)
-        {
-            return PayoffMatrix[row, column];
-        }
-        throw new ArgumentOutOfRangeException("Індекси виходять за межі матриці");
+        if (row < 0 || row >= RowCount)
+            throw new ArgumentOutOfRangeException(nameof(row), $"Індекс рядка {row} виходить за межі матриці (0-{RowCount - 1}).");
+        
+        if (column < 0 || column >= ColumnCount)
+            throw new ArgumentOutOfRangeException(nameof(column), $"Індекс стовпця {column} виходить за межі матриці (0-{ColumnCount - 1}).");
+        
+        return PayoffMatrix[row, column];
     }
     
     public int this[int row, int column]
@@ -101,9 +102,13 @@ public class GameMatrix
     /// </summary>
     public void CopyFrom(int[,] sourceMatrix)
     {
+        ArgumentNullException.ThrowIfNull(sourceMatrix);
+        
         if (sourceMatrix.GetLength(0) != RowCount || sourceMatrix.GetLength(1) != ColumnCount)
         {
-            throw new ArgumentException("Розміри матриць не співпадають");
+            throw new ArgumentException(
+                $"Розміри матриць не співпадають. Очікується {RowCount}x{ColumnCount}, отримано {sourceMatrix.GetLength(0)}x{sourceMatrix.GetLength(1)}.",
+                nameof(sourceMatrix));
         }
 
         for (var i = 0; i < RowCount; i++)
