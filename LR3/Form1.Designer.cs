@@ -245,7 +245,7 @@
             labelPayoff.AutoSize = true;
             labelPayoff.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             labelPayoff.ForeColor = Color.FromArgb(220, 53, 69);
-            labelPayoff.Location = new Point(600, 26);
+            labelPayoff.Location = new Point(600, 35);
             labelPayoff.Name = "labelPayoff";
             labelPayoff.Size = new Size(265, 19);
             labelPayoff.TabIndex = 2;
@@ -256,7 +256,7 @@
             labelDefenderChoice.AutoSize = true;
             labelDefenderChoice.Font = new Font("Segoe UI", 10F);
             labelDefenderChoice.ForeColor = Color.FromArgb(40, 167, 69);
-            labelDefenderChoice.Location = new Point(300, 26);
+            labelDefenderChoice.Location = new Point(6, 50);
             labelDefenderChoice.Name = "labelDefenderChoice";
             labelDefenderChoice.Size = new Size(136, 19);
             labelDefenderChoice.TabIndex = 1;
